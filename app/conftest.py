@@ -16,13 +16,12 @@ from pathlib import Path
 import sys
 import configparser
 
-sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), "./util"))))
 # compare screenShot class
-from VisualComparison import *
+from util.VisualComparison import *
 # screenShot Counter class
-from ScreenShotCount import *
+from util.ScreenShotCount import *
 
-import Constant
+from util.Constant import *
 from selenium.webdriver.support import expected_conditions as ec 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -79,16 +78,15 @@ def appium_driverFullReset():
 	driver = webdriver.Remote(
 		command_executor='http://localhost:4723/wd/hub',
 		desired_capabilities={
-			'app': os.path.abspath('/Users/raymondc/Documents/Appium/Octopus_VCC.ipa'),
-			'platformName': 'iOS',
-			'platformVersion': '11.3',
-			'deviceName': 'Timothy’s iPhone',
-			# 'noReset': True,
-			'fullReset': True,
-			'newCommandTimeout': '180',
-			'xcodeOrgId': 'L62BN6336L',
-			'xcodeSigningId': "iPhone Developer",
-			'udid':'d2868681650f7719f409679663b4af95f71278be'
+			"appium:app": "/Users/raymondchan/Documents/Appium/OctopusQuickBuild.app",
+			"platformName": "iOS",
+			"appium:deviceName": "iPhone 15",
+			"appium:platformVersion": "17.2",
+			"appium:noReset": True,
+			"appium:automationName": "XCUITest",
+			"appium:includeSafariInWebviews": True,
+			"appium:newCommandTimeout": 3600,
+			"appium:connectHardwareKeyboard": True
 		})
 	driver.implicitly_wait(20)
 	return driver
@@ -102,16 +100,15 @@ def appium_driverNoReset():
 	driver = webdriver.Remote(
 		command_executor='http://localhost:4723/wd/hub',
 		desired_capabilities={
-			'app': os.path.abspath('/Users/raymondc/Documents/Appium/Octopus_VCC.ipa'),
-			'platformName': 'iOS',
-			'platformVersion': '11.3',
-			'deviceName': 'Timothy’s iPhone',
-			'noReset': True,
-			# 'fullReset': True,
-			'newCommandTimeout': '180',
-			'xcodeOrgId': 'L62BN6336L',
-			'xcodeSigningId': "iPhone Developer",
-			'udid':'d2868681650f7719f409679663b4af95f71278be'
+			"appium:app": "/Users/raymondchan/Documents/Appium/OctopusQuickBuild.app",
+			"platformName": "iOS",
+			"appium:deviceName": "iPhone 15",
+			"appium:platformVersion": "17.2",
+			"appium:noReset": True,
+			"appium:automationName": "XCUITest",
+			"appium:includeSafariInWebviews": True,
+			"appium:newCommandTimeout": 3600,
+			"appium:connectHardwareKeyboard": True
 		})
 	driver.implicitly_wait(20)
 	return driver
@@ -123,9 +120,10 @@ def appium_driverNoReset():
 def pytest_addoption(parser):
 	parser.addoption("--fullReset", metavar='fullReset', default= "False", type=str, help= "Ture->Run fullReset, False-> Dun Reset")
 	parser.addoption("--device", metavar='device', default= "iPhone7_8_Plus", type=str, help= "iPhone5_SE = 4 inchs, iPhone7_8 = 4.7 inchs, iPhone7_8_Plus = 5.5 inchs, iPhoneX_Xs = 5.8 inchs, iPhoneXsMax = 6.5 inches, iPhoneXR = 6.1 inchs")
-	parser.addoption("--environment", metavar='environment', default= "Sazabi", type=str, help= "Zaku,Gouf,Sazabi,Pikachu,Custom")
+	parser.addoption("--environment", metavar='environment', default= "Kirby", type=str, help= "Zaku,Gouf,Sazabi,Pikachu,Custom")
 
 def pytest_configure(config):
+
 	fullReset = config.getoption('--fullReset')
 	pytest.global_fullReset = fullReset
 	device = config.getoption('--device')

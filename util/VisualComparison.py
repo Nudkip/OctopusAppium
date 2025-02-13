@@ -2,9 +2,9 @@ from PIL import Image,ImageDraw,ImageFont
 import os
 import sys
 import logging
-import Constant
+import util.Constant
 import shutil
-import ConfigureTest
+import app.conftest as conftest
 
 class VisualComparison:
 
