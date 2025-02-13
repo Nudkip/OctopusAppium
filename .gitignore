@@ -1,0 +1,14 @@
+# *.png
+*.jpg
+*.jpeg
+# *.png
+*.html
+*.gif
+/__pycache__
+*.pyc
+/Report/
+/test/ScreenShot/*/*/*
+!/test/ScreenShot/*/*/Source/
+# exclude all Source image
+*.pytest_cache
+/venv
