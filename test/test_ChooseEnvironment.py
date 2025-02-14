@@ -21,9 +21,12 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 
+from selenium.webdriver.common.actions.pointer_input import PointerInput
+
 #import all pytest.fixture
 from app.conftest import *
-from util.ScreenShotCount import *
+
+from config.utils import *
 
 def setup_module(module):
 	print()
@@ -53,17 +56,15 @@ class TestLoginOePay():
 
 	@pytest.mark.skipif(pytest.global_fullReset == "False", reason="Only run after FullReset")
 	@pytest.mark.run(order=0)
-	def test_fullResetapp(self, appium_driverFullReset, webDriverTimeoutFullReset):
+	def test_fullResetapp(self, appium_driverFullReset):
 		print("full reset App")
 
 	@pytest.mark.run(order=1)
-	def test_chooseEnvironmrnt(self, driver, webDriver):
-		# TouchAction(appium_driverGoSetting).press(x=self.x/2, y=self.y/2).wait(100).move_to(x=self.x/2, y=0).wait(100).release().perform()
-		# TouchAction(appium_driverGoSetting).press(x=self.x/2, y=self.y/2).wait(100).move_to(x=self.x/2, y=0).wait(100).release().perform()
+	def test_chooseEnvironmrnt(self, appium_driverSetting, webDriverTimeoutSetting):
+		octopus_xpath = '//XCUIElementTypeCell[@name="Octopus"]'
+		octopusCell =  utils.scroll_until_element_found(appium_driverSetting, octopus_xpath)
+		octopusCell.click()
 
-		width = driver.get_window_size()['width']
-		height = driver.get_window_size()['height']
-		driver.swipe(width / 2, height / 4, width / 2, height * 3 / 4, 500)
 
 
 

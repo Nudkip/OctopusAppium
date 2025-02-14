@@ -3,7 +3,8 @@
 lsof -i :4723
 kill -9 [PID]
 
-appium -a 0.0.0.0 -p 4723   
+appium --allow-cors
+<!-- appium -a 0.0.0.0 -p 4723    -->
 WebDriverAgentRunner installation
 
 options.load_capabilities({
