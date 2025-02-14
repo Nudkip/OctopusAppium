@@ -2,9 +2,10 @@ from PIL import Image,ImageDraw,ImageFont
 import os
 import sys
 import logging
-import util.Constant
+import Constant
 import shutil
-import app.conftest as conftest
+sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))))
+from conftest import *
 
 class VisualComparison:
 

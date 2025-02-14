@@ -15,13 +15,13 @@ from pathlib import Path
 import sys
 import configparser
 
-sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), "./utils"))))
+# sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), "./utils"))))
 # compare screenShot class
-from util.VisualComparison import *
+from VisualComparison import *
 # screenShot Counter class
-from util.ScreenShotCount import *
+from ScreenShotCount import *
 
-import util.Constant
+import Constant
 from selenium.webdriver.support import expected_conditions as ec 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -38,7 +38,7 @@ logging.basicConfig(level=logging.CRITICAL)
 
 diffFound = False
 
-class utils:
+class Helper:
 	def swipe_down(driver, start_x, start_y, end_x, end_y):
 		actions = ActionChains(driver)
 		#创建输入设备
@@ -51,6 +51,9 @@ class utils:
 		#执行actions对象的动作序列
 		actions.perform()
 
+	def printLog():
+		print("on99")
+
 	def scroll_until_element_found(driver, xpath, max_attempts=5):
 		for _ in range(max_attempts):
 			try:
@@ -60,5 +63,4 @@ class utils:
 			except:
 				print("Element not found, swiping down...")
 				swipe_down(driver, 200, 600, 200, 200, duration=800)
-
 		raise Exception("Element not found after max attempts")

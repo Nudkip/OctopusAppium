@@ -14,12 +14,13 @@ from pathlib import Path
 import sys
 import configparser
 
+sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), "./util"))))
 # compare screenShot class
-from util.VisualComparison import *
+from VisualComparison import *
 # screenShot Counter class
-from util.ScreenShotCount import *
+from ScreenShotCount import *
+from Constant import *
 
-from util.Constant import *
 from appium import webdriver
 from appium.options.common.base import AppiumOptions
 from appium.webdriver.common.appiumby import AppiumBy
@@ -130,11 +131,6 @@ def appium_driverNoReset():
 
 # ````````````````````` pytest_configure `````````````````````
 
-def pytest_addoption(parser):
-	parser.addoption("--fullReset", metavar='fullReset', default= "False", type=str, help= "Ture->Run fullReset, False-> Dun Reset")
-	parser.addoption("--device", metavar='device', default= "iPhone7_8_Plus", type=str, help= "iPhone5_SE = 4 inchs, iPhone7_8 = 4.7 inchs, iPhone7_8_Plus = 5.5 inchs, iPhoneX_Xs = 5.8 inchs, iPhoneXsMax = 6.5 inches, iPhoneXR = 6.1 inchs")
-	parser.addoption("--environment", metavar='environment', default= "Kirby", type=str, help= "Zaku,Gouf,Sazabi,Pikachu,Custom")
-
 def pytest_configure(config):
 
 	fullReset = config.getoption('--fullReset')
@@ -144,6 +140,29 @@ def pytest_configure(config):
 	environment = config.getoption('--environment')
 	pytest.global_environment = environment
 
+def pytest_addoption(parser):
+    # Use hyphens for CLI arguments (e.g., --full-reset)
+    parser.addoption(
+        "--fullReset",
+        metavar="FULL_RESET",
+        default="False",
+        type=str,
+        help="True: Run full reset, False: No reset"
+    )
+    parser.addoption(
+        "--device",
+        metavar="DEVICE",
+        default="iPhone7_8_Plus",
+        type=str,
+        help="Device type (e.g., iPhone7_8_Plus)"
+    )
+    parser.addoption(
+        "--environment",
+        metavar="ENVIRONMENT",
+        default="Kirby",
+        type=str,
+        help="Environment name (e.g., Zaku, Gouf)"
+    )
 
 # ````````````````````` pytest_configure `````````````````````
 

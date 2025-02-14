@@ -24,9 +24,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.actions.pointer_input import PointerInput
 
 #import all pytest.fixture
-from app.conftest import *
-
-from config.utils import *
+sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), "./util"))))
+from Helper import *
 
 def setup_module(module):
 	print()
@@ -36,7 +35,7 @@ def teardown_module(module):
 	print()
 	print("-------------- teardown_module after %s --------------" % module.__name__)
 
-class TestLoginOePay():
+class TestSetupAppEnv():
 	def setup_class(cls):
 		print()
 		print("~~~~~~~~~~~~~~ setup_class before %s ~~~~~~~~~~~~~~" % cls.__name__)
@@ -62,7 +61,7 @@ class TestLoginOePay():
 	@pytest.mark.run(order=1)
 	def test_chooseEnvironmrnt(self, appium_driverSetting, webDriverTimeoutSetting):
 		octopus_xpath = '//XCUIElementTypeCell[@name="Octopus"]'
-		octopusCell =  utils.scroll_until_element_found(appium_driverSetting, octopus_xpath)
+		octopusCell =  Helper.scroll_until_element_found(appium_driverSetting, octopus_xpath)
 		octopusCell.click()
 
 
