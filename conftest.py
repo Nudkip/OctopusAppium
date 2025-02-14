@@ -55,15 +55,12 @@ def webDriverTimeoutSetting(appium_driverSetting):
 
 @pytest.fixture(scope="function")
 def appium_driverSetting():
-	global driver
-	global compareArray
-	global diffFound
-	compareArray = []
 	options = AppiumOptions()
 	options.load_capabilities({
 		"platformName": "iOS",
 		"appium:deviceName": "iPhone 15",
 		"appium:platformVersion": "17.2",
+		"appium:includeNonModalElements": True,  # Critical for system elements
 		"appium:noReset": False,
 		"appium:app": "com.apple.Preferences",
 		"appium:automationName": "XCUITest",
@@ -88,6 +85,7 @@ def appium_driverFullReset():
 		"platformName": "iOS",
 		"appium:deviceName": "iPhone 15",
 		"appium:platformVersion": "17.2",
+		"appium:includeNonModalElements": True,  # Critical for system elements
 		"appium:noReset": True,
 			"appium:app": "/Users/raymondchan/Documents/Appium/OctopusQuickBuild.app",
 		"appium:automationName": "XCUITest",
@@ -113,6 +111,7 @@ def appium_driverNoReset():
 		"platformName": "iOS",
 		"appium:deviceName": "iPhone 15",
 		"appium:platformVersion": "17.2",
+		"appium:includeNonModalElements": True,  # Critical for system elements
 		"appium:noReset": True,
 			"appium:app": "/Users/raymondchan/Documents/Appium/OctopusQuickBuild.app",
 		"appium:automationName": "XCUITest",
@@ -208,40 +207,7 @@ def createDirectory(className, methodName):
 			print('%s %s' % (directory, 'is created'))
 		except Exception as e:
 			print('\n%s mkdirError: %s' % (directory, e))
-	return directory
-
-def captureScreenFYR(appium_driver,directory,screenShotCount, remarks):
-
-	statusBar = appium_driver.find_element_by_xpath("//XCUIElementTypeStatusBar")
-	screenSize = appium_driver.get_window_size()
-	sleep(1)
-	reminder = str(screenShotCount.getCounter())+ '_' + remarks
-	print(reminder)
-	basePath = str(directory)[:-len(str(time.strftime("%Y%m%d_%H_%M")))-1] + 'Source/' + pytest.global_device + '/'
-	baseScreenShotPath = basePath + str(screenShotCount.getCounter()) +'_'+ remarks +'.png'
-	testingScreenShotPath = directory + str(screenShotCount.getCounter()) +'_'+ remarks +'.png'
-	appium_driver.save_screenshot(testingScreenShotPath)
-
-	screenshotImage = Image.open(testingScreenShotPath)
-	screenshotImageWidth, screenshotImageHeight = screenshotImage.size
-	scaleRate = screenshotImageWidth/screenSize['width']
-
-	resized = (0, \
-		statusBar.size.get("height") * scaleRate, \
-			screenSize['width'] *scaleRate, \
-				(screenSize['height'] * scaleRate))
-
-	croppedScreenshotImage = screenshotImage.crop(resized)
-	croppedScreenshotImage.save(testingScreenShotPath)
-
-	dic = {Constant.TESTING_METHOD:reminder,\
-		Constant.BASE_SCREEN_SHOT:baseScreenShotPath,\
-			Constant.TESTING_SCREENSHOT:testingScreenShotPath,\
-				Constant.DIFF:""}
-	compareArray.append(dic)
-
-	screenShotCount.setCounter(screenShotCount.getCounter()+1)
-	
+	return directory	
 
 # def moveUISlider(driver, slider, increase):
 # 	Y = slider.location.get("y")
@@ -254,57 +220,61 @@ def captureScreenFYR(appium_driver,directory,screenShotCount, remarks):
 # 	else:
 # 		TouchAction(driver).press(x= startX, y= Y).wait(1000).move_to(x= 0, y= Y).wait(2000).release().perform()
 
-# def convertpngToBase64Html(imagePath):
-# 	encodedImage = base64.b64encode(open(imagePath, "rb").read()).decode('ascii')
-# 	return 'data:image/png;base64,%s' % encodedImage
+def convertpngToBase64Html(imagePath):
+	encodedImage = base64.b64encode(open(imagePath, "rb").read()).decode('ascii')
+	return 'data:image/png;base64,%s' % encodedImage
 
-# def createVisualComparisonTable():
+def createVisualComparisonTable():# The above code snippet is creating a visual comparison table for
+# comparing screenshots. It iterates through a list of
+# dictionaries called `compareArray`, where each dictionary
+# contains information about testing and base screenshots.
 
-# 	# print("createVisualComparisonTable")
 
-# 	for dictionary in compareArray:
-# 		dictionary['Diff'] = VisualComparison().analyze(dictionary['TestingScreenShot'], dictionary['BaseScreenShot'])
+	print("createVisualComparisonTable")
 
-# 	td1 = td("Testing Method (Screenshot Name)" ,style= "width:150px")
-# 	td2 = td(Constant.BASE_SCREEN_SHOT ,style= "width:270px")
-# 	td3 = td(Constant.TESTING_SCREENSHOT,style= "width:270px")
-# 	td4 = td(Constant.DIFF,style= "width:270px")
-# 	tr1 = tr(td1, td2, td3, td4)
-# 	table1 = table(tr1, align = "center", border="1")
-# 	for dictionary in compareArray:
-# 		trow = tr()
-# 		tdName = td(dictionary[Constant.TESTING_METHOD] ,style= "width:150px")
-# 		tdBaseScreenShot = td(img(style="width:270px;height:480px;", src = convertpngToBase64Html(dictionary[Constant.BASE_SCREEN_SHOT])))
-# 		tdTestingScreenShot = td(img(style="width:270px;height:480px;", src = convertpngToBase64Html(dictionary[Constant.TESTING_SCREENSHOT])))
-# 		if dictionary[Constant.DIFF] is not None:
-# 			tdDiff = td(img(style="width:270px;height:480px;", src = convertpngToBase64Html(dictionary["Diff"])))
-# 			trow = tr(tdName, tdBaseScreenShot, tdTestingScreenShot, tdDiff, bgcolor = "#fff200")
-# 		else:
-# 			tdDiff = td(font("✅",size = "20" ) , style="width:270px;height:480px;" , align= "center")
-# 			trow = tr(tdName, tdBaseScreenShot, tdTestingScreenShot, tdDiff)
-# 		table1.add(trow)
+	for dictionary in compareArray:
+		dictionary['Diff'] = VisualComparison().analyze(dictionary['TestingScreenShot'], dictionary['BaseScreenShot'])
 
-# 	p1 = p(table1)
-# 	return str(p1)
+	td1 = td("Testing Method (Screenshot Name)" ,style= "width:150px")
+	td2 = td(Constant.BASE_SCREEN_SHOT ,style= "width:270px")
+	td3 = td(Constant.TESTING_SCREENSHOT,style= "width:270px")
+	td4 = td(Constant.DIFF,style= "width:270px")
+	tr1 = tr(td1, td2, td3, td4)
+	table1 = table(tr1, align = "center", border="1")
+	for dictionary in compareArray:
+		trow = tr()
+		tdName = td(dictionary[Constant.TESTING_METHOD] ,style= "width:150px")
+		tdBaseScreenShot = td(img(style="width:270px;height:480px;", src = convertpngToBase64Html(dictionary[Constant.BASE_SCREEN_SHOT])))
+		tdTestingScreenShot = td(img(style="width:270px;height:480px;", src = convertpngToBase64Html(dictionary[Constant.TESTING_SCREENSHOT])))
+		if dictionary[Constant.DIFF] is not None:
+			tdDiff = td(img(style="width:270px;height:480px;", src = convertpngToBase64Html(dictionary["Diff"])))
+			trow = tr(tdName, tdBaseScreenShot, tdTestingScreenShot, tdDiff, bgcolor = "#fff200")
+		else:
+			tdDiff = td(font("✅",size = "20" ) , style="width:270px;height:480px;" , align= "center")
+			trow = tr(tdName, tdBaseScreenShot, tdTestingScreenShot, tdDiff)
+		table1.add(trow)
+
+	p1 = p(table1)
+	return str(p1)
 
 #////////////////////// Common function //////////////////////
 
 #====================== pytest html report ======================
-# @pytest.mark.optionalhook
-# def pytest_html_results_table_header(cells):
-# 	cells.pop(3)
-# 	cells.insert(3, pyhtml.th("Pass Diff?"))
+@pytest.mark.optionalhook
+def pytest_html_results_table_header(cells):
+	cells.pop(3)
+	cells.insert(3, pyhtml.th("Pass Diff?"))
 
-# @pytest.mark.optionalhook
-# def pytest_html_results_table_row(report, cells):
-# 	cells.pop(3)
-# 	print("pytest_html_results_table_row")
-# 	global diffFound
-# 	if diffFound:
-# 		cells.insert(3, pyhtml.td('❌'))
-# 	else:
-# 		cells.insert(3, pyhtml.td('✅'))
-# 	diffFound = False
+@pytest.mark.optionalhook
+def pytest_html_results_table_row(report, cells):
+	cells.pop(3)
+	print("pytest_html_results_table_row")
+	global diffFound
+	if diffFound:
+		cells.insert(3, pyhtml.td('❌'))
+	else:
+		cells.insert(3, pyhtml.td('✅'))
+	diffFound = False
 
 
 # @pytest.mark.hookwrapper
