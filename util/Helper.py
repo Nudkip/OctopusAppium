@@ -39,28 +39,46 @@ logging.basicConfig(level=logging.CRITICAL)
 diffFound = False
 
 class Helper:
-	def swipe_down(driver, start_x, start_y, end_x, end_y):
-		actions = ActionChains(driver)
-		#创建输入设备
-		finger1 = actions.w3c_actions.add_pointer_input('touch','finger1')
-		#输入设备移动
-		finger1.create_pointer_move(x=start_x,y=start_y)
-		#输入设备移动
-		finger1.create_pointer_move(x=end_x,y=end_y)
-		#按下输入设备的鼠标左键
-		#执行actions对象的动作序列
-		actions.perform()
+    @staticmethod
+    def swipe_down(driver, start_x, start_y, end_x, end_y):
+        actions = ActionChains(driver)
+        finger1 = actions.w3c_actions.add_pointer_input('touch', 'finger1')
+        finger1.create_pointer_move(x=start_x, y=start_y)
+        finger1.create_pointer_move(x=end_x, y=end_y)
+        actions.perform()
+    
+    @staticmethod
+    def scroll_until_element_found(driver, xpath, max_attempts=5):
+        for _ in range(max_attempts):
+            try:
+                element = WebDriverWait(driver, 0.1).until(EC.visibility_of_element_located((By.XPATH, xpath)))
+                print("Element found! %s" % xpath)
+                return element
+            except:
+                print("Element not found, swiping down...")
+                Helper.swipe_down(driver, 200, 600, 200, 200)
+        raise Exception("Element not found after max attempts")
 
-	def printLog():
-		print("on99")
+    @staticmethod
+    def scroll_until_elementID_found(driver, id, max_attempts=5):
+        for _ in range(max_attempts):
+            try:
+                element = WebDriverWait(driver, 0.1).until(EC.visibility_of_element_located((By.ID, id)))
+                print("Element found! %s" % id)
+                return element
+            except:
+                print("Element not found, swiping down...")
+                Helper.swipe_down(driver, 200, 600, 200, 200)
+        raise Exception("Element not found after max attempts")
 
-	def scroll_until_element_found(driver, xpath, max_attempts=5):
-		for _ in range(max_attempts):
-			try:
-				element = WebDriverWait(driver, 2).until(EC.presence_of_element_located((By.XPATH, xpath)))
-				print("Element found!")
-				return element
-			except:
-				print("Element not found, swiping down...")
-				swipe_down(driver, 200, 600, 200, 200, duration=800)
-		raise Exception("Element not found after max attempts")
+    @staticmethod
+    def scroll_until_appiumBY_found(driver, appiumBy, max_attempts=5):
+        for _ in range(max_attempts):
+            try:
+                element = WebDriverWait(driver, 0.1).until(EC.visibility_of_element_located((AppiumBy.IOS_CLASS_CHAIN, appiumBy)))
+                print("Element found! %s" % id)
+                return element
+            except:
+                print("Element not found, swiping down...")
+                Helper.swipe_down(driver, 200, 600, 200, 200)
+        raise Exception("Element not found after max attempts")

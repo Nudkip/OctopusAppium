@@ -20,6 +20,7 @@ import logging
 from selenium.webdriver.support import expected_conditions as ec 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
+from appium.webdriver.common.appiumby import AppiumBy
 
 from selenium.webdriver.common.actions.pointer_input import PointerInput
 
@@ -55,15 +56,38 @@ class TestSetupAppEnv():
 
 	@pytest.mark.skipif(pytest.global_fullReset == "False", reason="Only run after FullReset")
 	@pytest.mark.run(order=0)
-	def test_fullResetapp(self, appium_driverFullReset):
+	def test_fullResetApp(self, appium_driverFullReset):
 		print("full reset App")
 
 	@pytest.mark.run(order=1)
-	def test_chooseEnvironmrnt(self, appium_driverSetting, webDriverTimeoutSetting):
-		octopus_xpath = '//XCUIElementTypeCell[@name="Octopus"]'
-		octopusCell =  Helper.scroll_until_element_found(appium_driverSetting, octopus_xpath)
+	def test_setupEnvironment(self, appium_driverSetting, webDriverTimeoutSetting):
+		octopusCell = Helper.scroll_until_element_found(appium_driverSetting, '//XCUIElementTypeCell[@name="Octopus"]')
 		octopusCell.click()
 
+		serverCell = Helper.scroll_until_element_found(appium_driverSetting, '//XCUIElementTypeCollectionView/XCUIElementTypeCell[13]')
+		serverCell.click()
 
+		envCell = Helper.scroll_until_element_found(appium_driverSetting, '//XCUIElementTypeCell[@name="%s"]' % pytest.global_environment)
+		envCell.click()
 
+		backBtn = Helper.scroll_until_element_found(appium_driverSetting, '//XCUIElementTypeButton[@name="Octopus"]')
+		backBtn.click()
 
+		
+		customOWPathTextField = Helper.scroll_until_element_found(appium_driverSetting, '//XCUIElementTypeTextField[@name="SB_CUS_OW_PATH"]')
+		customOWPathTextField.clear()
+		customOWPathTextField.send_keys("%s" % pytest.global_owPath)
+
+		customOOSPathTextField = Helper.scroll_until_element_found(appium_driverSetting, '//XCUIElementTypeTextField[@name="SB_CUS_OOS_PATH"]')
+		customOOSPathTextField.clear()
+		customOOSPathTextField.send_keys("%s" % pytest.global_oosPath)
+  
+		try:
+			customWARSwitch = appium_driverSetting.find_element(by=AppiumBy.IOS_CLASS_CHAIN, value="**/XCUIElementTypeSwitch[`value == \"0\"`][2]")
+			switch_state = customWARSwitch.get_attribute("value")
+			print("click the switch now")
+			customWARSwitch.click()  # Turn the switch on
+		except:
+			print("customWARSwitch is on now")
+
+		appium_driverSetting.quit()

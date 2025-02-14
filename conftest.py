@@ -64,7 +64,7 @@ def appium_driverSetting():
 		"platformName": "iOS",
 		"appium:deviceName": "iPhone 15",
 		"appium:platformVersion": "17.2",
-		"appium:noReset": True,
+		"appium:noReset": False,
 		"appium:app": "com.apple.Preferences",
 		"appium:automationName": "XCUITest",
 		"appium:includeSafariInWebviews": True,
@@ -139,6 +139,11 @@ def pytest_configure(config):
 	pytest.global_device = device
 	environment = config.getoption('--environment')
 	pytest.global_environment = environment
+	environment = config.getoption('--owPath')
+	pytest.global_owPath = environment
+	environment = config.getoption('--oosPath')
+	pytest.global_oosPath = environment
+
 
 def pytest_addoption(parser):
     # Use hyphens for CLI arguments (e.g., --full-reset)
@@ -163,6 +168,21 @@ def pytest_addoption(parser):
         type=str,
         help="Environment name (e.g., Zaku, Gouf)"
     )
+    parser.addoption(
+        "--owPath",
+        metavar="OWPath",
+        default="/ow_owallet_ws/rest/",
+        type=str,
+        help="/ow_owallet_ws_xxxxxx/rest/"
+    )
+    parser.addoption(
+        "--oosPath",
+        metavar="OOSPath",
+        default="/wildfly/7301/",
+        type=str,
+        help="/wildfly/7301/"
+    )
+
 
 # ````````````````````` pytest_configure `````````````````````
 
@@ -190,40 +210,37 @@ def createDirectory(className, methodName):
 			print('\n%s mkdirError: %s' % (directory, e))
 	return directory
 
-# def captureScreenFYR(appium_driver,directory,screenShotCount, remarks):
+def captureScreenFYR(appium_driver,directory,screenShotCount, remarks):
 
-# 	statusBar = appium_driver.find_element_by_xpath("//XCUIElementTypeStatusBar")
-# 	screenSize = appium_driver.get_window_size()
-# 	# print("statusBar.size.get(\"height\") " ,statusBar.size.get("height"))
-# 	# print("screenSize.size.get(\"screenWidth\") " ,str(screenSize['width']))
-# 	# print("screenSize.size.get(\"screenHeight\") " ,str(screenSize['height']))
-# 	sleep(1)
-# 	reminder = str(screenShotCount.getCounter())+ '_' + remarks
-# 	print(reminder)
-# 	basePath = str(directory)[:-len(str(time.strftime("%Y%m%d_%H_%M")))-1] + 'Source/' + pytest.global_device + '/'
-# 	baseScreenShotPath = basePath + str(screenShotCount.getCounter()) +'_'+ remarks +'.png'
-# 	testingScreenShotPath = directory + str(screenShotCount.getCounter()) +'_'+ remarks +'.png'
-# 	appium_driver.save_screenshot(testingScreenShotPath)
+	statusBar = appium_driver.find_element_by_xpath("//XCUIElementTypeStatusBar")
+	screenSize = appium_driver.get_window_size()
+	sleep(1)
+	reminder = str(screenShotCount.getCounter())+ '_' + remarks
+	print(reminder)
+	basePath = str(directory)[:-len(str(time.strftime("%Y%m%d_%H_%M")))-1] + 'Source/' + pytest.global_device + '/'
+	baseScreenShotPath = basePath + str(screenShotCount.getCounter()) +'_'+ remarks +'.png'
+	testingScreenShotPath = directory + str(screenShotCount.getCounter()) +'_'+ remarks +'.png'
+	appium_driver.save_screenshot(testingScreenShotPath)
 
-# 	screenshotImage = Image.open(testingScreenShotPath)
-# 	screenshotImageWidth, screenshotImageHeight = screenshotImage.size
-# 	scaleRate = screenshotImageWidth/screenSize['width']
+	screenshotImage = Image.open(testingScreenShotPath)
+	screenshotImageWidth, screenshotImageHeight = screenshotImage.size
+	scaleRate = screenshotImageWidth/screenSize['width']
 
-# 	resized = (0, \
-# 		statusBar.size.get("height") * scaleRate, \
-# 			screenSize['width'] *scaleRate, \
-# 				(screenSize['height'] * scaleRate))
+	resized = (0, \
+		statusBar.size.get("height") * scaleRate, \
+			screenSize['width'] *scaleRate, \
+				(screenSize['height'] * scaleRate))
 
-# 	croppedScreenshotImage = screenshotImage.crop(resized)
-# 	croppedScreenshotImage.save(testingScreenShotPath)
+	croppedScreenshotImage = screenshotImage.crop(resized)
+	croppedScreenshotImage.save(testingScreenShotPath)
 
-# 	dic = {Constant.TESTING_METHOD:reminder,\
-# 		Constant.BASE_SCREEN_SHOT:baseScreenShotPath,\
-# 			Constant.TESTING_SCREENSHOT:testingScreenShotPath,\
-# 				Constant.DIFF:""}
-# 	compareArray.append(dic)
+	dic = {Constant.TESTING_METHOD:reminder,\
+		Constant.BASE_SCREEN_SHOT:baseScreenShotPath,\
+			Constant.TESTING_SCREENSHOT:testingScreenShotPath,\
+				Constant.DIFF:""}
+	compareArray.append(dic)
 
-# 	screenShotCount.setCounter(screenShotCount.getCounter()+1)
+	screenShotCount.setCounter(screenShotCount.getCounter()+1)
 	
 
 # def moveUISlider(driver, slider, increase):
