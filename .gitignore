@@ -12,3 +12,4 @@
 # exclude all Source image
 *.pytest_cache
 /venv
+/testResult
