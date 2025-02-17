@@ -26,3 +26,5 @@ pip3 install appium-python-client
 pip3 install pytest
 pip3 install py
 pip3 install dominate
+pip3 install pytest-ordering
+pip3 install pytest-html 
