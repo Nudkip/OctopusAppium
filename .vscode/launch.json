@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "args": ["-v", "-s", "--environment=Kirby", "--html=./index.html", "--self-contained-html"],
+        "args": ["-v", "--environment=Kirby", "--html=index.html", "--self-contained-html"],
         "name": "PyTest All",
         "type": "python",
         "request": "launch",

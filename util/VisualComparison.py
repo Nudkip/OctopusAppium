@@ -1,12 +1,7 @@
 from PIL import Image,ImageDraw,ImageFont
 import os
-import sys
-import logging
-import Constant
 import shutil
-sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))))
-from conftest import *
-
+import pytest
 class VisualComparison:
 
 	def analyze(self, screenShotTestingPath, screenShotSourcePath):
@@ -42,8 +37,8 @@ class VisualComparison:
 		comparisonResultImg.save(comparisonResultPath)
 
 		if diffFound:
-			conftest.diffFound = True
 			print("Found Diff")
+			pytest.sharedHelper.diffFound = True
 			return comparisonResultPath
 		else:
 			print("No Diff")

@@ -1,6 +1,4 @@
 # coding=utf-8
-from appium import webdriver
-from py.xml import html as pyhtml
 import pytest
 import os
 import time
@@ -8,12 +6,9 @@ import shutil, sys
 import logging
 from time import sleep
 import base64
-from io import BytesIO
-import inspect
 from PIL import Image
 from pathlib import Path
 import sys
-import configparser
 
 # sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), "./utils"))))
 # compare screenShot class
@@ -30,24 +25,25 @@ from selenium.webdriver.support import expected_conditions as EC
 from functools import cache
 
 # generate html code
-import dominate
+from appium.webdriver import * 
 from dominate.tags import *
 
 logging.basicConfig(level=logging.CRITICAL)
 
-diffFound = False
 
 class Helper:
-	_instance = None
+	# _instance = None
 
-	def __new__(cls, *args, **kwargs):
-		if cls._instance is None:
-			cls._instance = super().__new__(cls)
-		return cls._instance
+	# def __new__(cls, *args, **kwargs):
+	# 	if cls._instance is None:
+	# 		cls._instance = super().__new__(cls)
+	# 	return cls._instance
 
 	def __init__(self):
 		self.id = id(self)
 		self.compareArray = []
+		self.diffFound = False
+		self.driver = webdriver
 
 	def add_to_compare_array(self, dic):
 		self.compareArray.append(dic)
@@ -102,39 +98,54 @@ class Helper:
 				Helper().swipe_down(driver, 200, 600, 200, 200)
 		raise Exception("Element not found after max attempts")
 
-	def captureScreenFYR(self, appium_driver,directory, screenShotCount, remarks):
+	def captureScreenFYR(self, appium_driver, directory, screenShotCount, remarks):
 		screenSize = appium_driver.get_window_size()
 		sleep(1)
-		reminder = str(screenShotCount.getCounter())+ '_' + remarks
-		# print(reminder)
+		reminder = str(screenShotCount.getCounter()) + '_' + remarks
 		basePath = str(directory)[:-len(str(time.strftime("%Y%m%d_%H_%M")))-1] + 'Source/' + pytest.global_device + '/'
 		print(basePath)
 
-		baseScreenShotPath = basePath + str(screenShotCount.getCounter()) +'_'+ remarks +'.png'
-		testingScreenShotPath = directory + str(screenShotCount.getCounter()) +'_'+ remarks +'.png'
+		baseScreenShotPath = basePath + str(screenShotCount.getCounter()) + '_' + remarks + '.png'
+		testingScreenShotPath = directory + str(screenShotCount.getCounter()) + '_' + remarks + '.png'
+		
+		# Save the screenshot
 		appium_driver.save_screenshot(testingScreenShotPath)
 		print(testingScreenShotPath)
 
+		# Open the screenshot
 		screenshotImage = Image.open(testingScreenShotPath)
-		screenshotImageWidth, screenshotImageHeight = screenshotImage.size
-		scaleRate = screenshotImageWidth/screenSize['width']
 
-		resized = (0, \
-			40 * scaleRate, \
-				screenSize['width'] *scaleRate, \
-					(screenSize['height'] * scaleRate))
+		# Resize the image to 50%
+		new_width = int(screenshotImage.width * 0.2)
+		new_height = int(screenshotImage.height * 0.2)
+		resizedImage = screenshotImage.resize((new_width, new_height))
 
-		croppedScreenshotImage = screenshotImage.crop(resized)
+		# Calculate the scaled top 40 pixels based on the screen size ratio
+		scaleRate = new_height / screenSize['height']
+		scaled_top = int(40 * scaleRate)
+
+		# Define the crop area (left, upper, right, lower)
+		crop_area = (0, scaled_top, new_width, new_height)  # Crop based on scaled top
+
+		# Crop the resized image
+		croppedScreenshotImage = resizedImage.crop(crop_area)
+		
+		# Save the cropped image
 		croppedScreenshotImage.save(testingScreenShotPath)
 
-		dic = {Constant.TESTING_METHOD:reminder,\
-			Constant.BASE_SCREEN_SHOT:baseScreenShotPath,\
-				Constant.TESTING_SCREENSHOT:testingScreenShotPath,\
-					Constant.DIFF:""}
+		# Prepare the dictionary for comparison
+		dic = {
+			Constant.TESTING_METHOD: reminder,
+			Constant.BASE_SCREEN_SHOT: baseScreenShotPath,
+			Constant.TESTING_SCREENSHOT: testingScreenShotPath,
+			Constant.DIFF: ""
+		}
+		
 		# Use the Helper instance to add to compareArray
 		self.add_to_compare_array(dic)
 
-		screenShotCount.setCounter(screenShotCount.getCounter()+1)
+		# Update the screenshot counter
+		screenShotCount.setCounter(screenShotCount.getCounter() + 1)
 
 	@staticmethod
 	def createDirectory(className, methodName):
@@ -176,21 +187,22 @@ class Helper:
 			dictionary['Diff'] = VisualComparison().analyze(dictionary['TestingScreenShot'], dictionary['BaseScreenShot'])
 
 		td1 = td("Testing Method (Screenshot Name)" ,style= "width:150px")
-		td2 = td(Constant.BASE_SCREEN_SHOT ,style= "width:270px")
-		td3 = td(Constant.TESTING_SCREENSHOT,style= "width:270px")
-		td4 = td(Constant.DIFF,style= "width:270px")
+		td2 = td(Constant.BASE_SCREEN_SHOT ,style= "width:240px")
+		td3 = td(Constant.TESTING_SCREENSHOT,style= "width:240px")
+		td4 = td(Constant.DIFF,style= "width:240px")
 		tr1 = tr(td1, td2, td3, td4)
 		table1 = table(tr1, align = "center", border="1")
 		for dictionary in self.compareArray:
 			trow = tr()
 			tdName = td(dictionary[Constant.TESTING_METHOD] ,style= "width:150px")
-			tdBaseScreenShot = td(img(style="width:270px;height:480px;", src = Helper().convertpngToBase64Html(dictionary[Constant.BASE_SCREEN_SHOT])))
-			tdTestingScreenShot = td(img(style="width:270px;height:480px;", src = Helper().convertpngToBase64Html(dictionary[Constant.TESTING_SCREENSHOT])))
+			# Set max-width and max-height to ensure aspect fit
+			tdBaseScreenShot = td(img(style="max-width:240px; max-height:480px;", src=Helper().convertpngToBase64Html(dictionary[Constant.BASE_SCREEN_SHOT])))
+			tdTestingScreenShot = td(img(style="max-width:240px; max-height:480px;", src=Helper().convertpngToBase64Html(dictionary[Constant.TESTING_SCREENSHOT])))
 			if dictionary[Constant.DIFF] is not None:
-				tdDiff = td(img(style="width:270px;height:480px;", src = Helper().convertpngToBase64Html(dictionary["Diff"])))
-				trow = tr(tdName, tdBaseScreenShot, tdTestingScreenShot, tdDiff, bgcolor = "#fff200")
+				tdDiff = td(img(style="max-width:240px; max-height:480px;", src=Helper().convertpngToBase64Html(dictionary["Diff"])))
+				trow = tr(tdName, tdBaseScreenShot, tdTestingScreenShot, tdDiff, bgcolor="#fff200")
 			else:
-				tdDiff = td(font("✅",size = "20" ) , style="width:270px;height:480px;" , align= "center")
+				tdDiff = td(font("✅",size = "20" ) , style="max-width:240px; max-height:480px;" , align= "center")
 				trow = tr(tdName, tdBaseScreenShot, tdTestingScreenShot, tdDiff)
 			table1.add(trow)
 
