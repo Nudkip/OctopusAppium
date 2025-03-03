@@ -95,10 +95,10 @@ def pytest_configure(config):
 	pytest.global_device = device
 	environment = config.getoption('--environment')
 	pytest.global_environment = environment
-	environment = config.getoption('--owPath')
-	pytest.global_owPath = environment
-	environment = config.getoption('--oosPath')
-	pytest.global_oosPath = environment
+	owPath = config.getoption('--owPath')
+	pytest.global_owPath = owPath
+	oosPath = config.getoption('--oosPath')
+	pytest.global_oosPath = oosPath
  
 	config.option.html_show_all = True  # Show extras for all tests
 

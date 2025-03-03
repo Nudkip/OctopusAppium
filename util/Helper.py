@@ -22,6 +22,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.actions import *
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
+from appium.webdriver.common.appiumby import *
 from functools import cache
 
 # generate html code
@@ -68,6 +69,30 @@ class Helper:
 			try:
 				element = WebDriverWait(driver, 0.1).until(EC.visibility_of_element_located((By.XPATH, xpath)))
 				print("Element found! %s" % xpath)
+				return element
+			except:
+				print("Element not found, swiping down...")
+				Helper().swipe_down(driver, 200, 600, 200, 200)
+		raise Exception("Element not found after max attempts")
+
+	@staticmethod
+	def scroll_until_iOSPredicateString_element_found(driver, predicateString, max_attempts=5):
+		for _ in range(max_attempts):
+			try:
+				element = WebDriverWait(driver, 0.1).until(EC.visibility_of_element_located((AppiumBy.IOS_PREDICATE, predicateString)))
+				print("Element found! %s" % predicateString)
+				return element
+			except:
+				print("Element not found, swiping down...")
+				Helper().swipe_down(driver, 200, 600, 200, 200)
+		raise Exception("Element not found after max attempts")
+
+	@staticmethod
+	def scroll_until_accessibilityID_element_found(driver, ID, max_attempts=5):
+		for _ in range(max_attempts):
+			try:
+				element = WebDriverWait(driver, 0.1).until(EC.visibility_of_element_located((AppiumBy.ACCESSIBILITY_ID, ID)))
+				print("Element found! %s" % ID)
 				return element
 			except:
 				print("Element not found, swiping down...")
