@@ -56,13 +56,14 @@ class Helper:
 		return self.compareArray.clear
 
 	@staticmethod
-	def swipe_down(driver, start_x, start_y, end_x, end_y):
+	def swipe(driver, start_x, start_y, end_x, end_y):
 		actions = ActionChains(driver)
 		finger1 = actions.w3c_actions.add_pointer_input('touch', 'finger1')
 		finger1.create_pointer_move(x=start_x, y=start_y)
 		finger1.create_pointer_move(x=end_x, y=end_y)
 		actions.perform()
 	
+
 	@staticmethod
 	def scroll_until_element_found(driver, xpath, max_attempts=5):
 		for _ in range(max_attempts):
@@ -72,7 +73,7 @@ class Helper:
 				return element
 			except:
 				print("Element not found, swiping down...")
-				Helper().swipe_down(driver, 200, 600, 200, 200)
+				Helper().swipe(driver, 200, 600, 200, 200)
 		raise Exception("Element not found after max attempts")
 
 	@staticmethod
@@ -84,7 +85,7 @@ class Helper:
 				return element
 			except:
 				print("Element not found, swiping down...")
-				Helper().swipe_down(driver, 200, 600, 200, 200)
+				Helper().swipe(driver, 200, 600, 200, 200)
 		raise Exception("Element not found after max attempts")
 
 	@staticmethod
@@ -96,7 +97,7 @@ class Helper:
 				return element
 			except:
 				print("Element not found, swiping down...")
-				Helper().swipe_down(driver, 200, 600, 200, 200)
+				Helper().swipe(driver, 200, 600, 200, 200)
 		raise Exception("Element not found after max attempts")
 
 	@staticmethod
@@ -108,7 +109,7 @@ class Helper:
 				return element
 			except:
 				print("Element not found, swiping down...")
-				Helper().swipe_down(driver, 200, 600, 200, 200)
+				Helper().swipe(driver, 200, 600, 200, 200)
 		raise Exception("Element not found after max attempts")
 
 	@staticmethod
@@ -120,7 +121,7 @@ class Helper:
 				return element
 			except:
 				print("Element not found, swiping down...")
-				Helper().swipe_down(driver, 200, 600, 200, 200)
+				Helper().swipe(driver, 200, 600, 200, 200)
 		raise Exception("Element not found after max attempts")
 
 	def captureScreenFYR(self, appium_driver, directory, screenShotCount, remarks):
@@ -232,4 +233,6 @@ class Helper:
 			table1.add(trow)
 
 		p1 = p(table1)
+		# reset array
+		self.compareArray = []
 		return str(p1)

@@ -48,8 +48,8 @@ def appium_driverFullReset():
 		"appium:deviceName": "iPhone 15",
 		"appium:platformVersion": "17.2",
 		"appium:includeNonModalElements": True,  # Critical for system elements
-		"appium:noReset": True,
-			"appium:app": "/Users/raymondchan/Documents/Appium/OctopusQuickBuild.app",
+		"appium:noReset": False,
+		"appium:app": "/Users/raymondchan/Documents/Appium/OctopusQuickBuild.app",
 		"appium:automationName": "XCUITest",
 		"appium:includeSafariInWebviews": True,
 		"appium:newCommandTimeout": 3600,
@@ -71,7 +71,7 @@ def appium_driverNoReset():
 		"appium:platformVersion": "17.2",
 		"appium:includeNonModalElements": True,  # Critical for system elements
 		"appium:noReset": True,
-			"appium:app": "/Users/raymondchan/Documents/Appium/OctopusQuickBuild.app",
+		"appium:app": "/Users/raymondchan/Documents/Appium/OctopusQuickBuild.app",
 		"appium:automationName": "XCUITest",
 		"appium:includeSafariInWebviews": True,
 		"appium:newCommandTimeout": 3600,
@@ -103,7 +103,6 @@ def pytest_configure(config):
 	config.option.html_show_all = True  # Show extras for all tests
 
 	pytest.sharedHelper = Helper()
-
 
 
 def pytest_addoption(parser):
