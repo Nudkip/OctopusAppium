@@ -10,13 +10,9 @@ from PIL import Image
 from pathlib import Path
 import sys
 
-# sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), "./utils"))))
-# compare screenShot class
-from VisualComparison import *
-# screenShot Counter class
-from ScreenShotCount import *
+from .VisualComparison import VisualComparison
+from .Constant import Constant
 
-import Constant
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.actions import *

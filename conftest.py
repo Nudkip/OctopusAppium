@@ -8,8 +8,7 @@ import sys
 import pytest_html
 from dominate.tags import *
 
-sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), "./util"))))
-from Helper import Helper
+from util.Helper import Helper
 
 from appium.webdriver import Remote
 from appium.options.common.base import AppiumOptions

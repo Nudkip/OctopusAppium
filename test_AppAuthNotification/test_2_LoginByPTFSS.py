@@ -13,12 +13,12 @@ import pytest
 import logging
 from enum import Enum
 from appium.webdriver.common.appiumby import AppiumBy
-
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from util.Helper import *
+from util.ScreenShotCount import * 
 #import all pytest.fixture
-sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), "./util"))))
-from ScreenShotCount import *
 # from Helper import *
-sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))))
 from conftest import *
 
 def setup_module(module):

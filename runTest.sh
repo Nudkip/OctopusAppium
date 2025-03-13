@@ -16,7 +16,6 @@ for(( j=0; j<$arrayLength; j++ ))
 do
     testCase=${testCasePathArray[$j]}
     echo running $line
-    echo "ON999999"
     # stop after two failures --maxfail=2 
     # shortcut for --capture=no. -s
     # increase verbosity. -v

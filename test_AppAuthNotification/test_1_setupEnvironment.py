@@ -14,9 +14,7 @@ import logging
 from enum import Enum
 from appium.webdriver.common.appiumby import AppiumBy
 
-#import all pytest.fixture
-sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), "./util"))))
-from ScreenShotCount import *
+from util.ScreenShotCount import *
 # from Helper import *
 sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))))
 from conftest import *
