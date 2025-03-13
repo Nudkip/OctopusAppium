@@ -56,6 +56,23 @@ class Helper:
 		return self.compareArray.clear
 
 	@staticmethod
+	def tap(driver, start_x, start_y):
+		actions = ActionChains(driver)
+
+		# Add a pointer input of type 'touch'
+		finger = actions.w3c_actions.add_pointer_input('touch', 'finger')
+
+		# Move to the specified coordinates (relative to the viewport)
+		finger.create_pointer_move(x=int(start_x), y=int(start_y), origin='viewport')
+
+		# Simulate the tap action (pointer down and pointer up)
+		finger.create_pointer_down(button=0)
+		finger.create_pointer_up(button=0)
+
+		# Execute the action
+		actions.perform()
+
+	@staticmethod
 	def swipe(driver, start_x, start_y, end_x, end_y):
 		actions = ActionChains(driver)
 		finger1 = actions.w3c_actions.add_pointer_input('touch', 'finger1')
