@@ -100,6 +100,11 @@ def pytest_configure(config):
 	oosPath = config.getoption('--oosPath')
 	pytest.global_oosPath = oosPath
  
+	walletMobileNo = config.getoption('--walletMobileNo')
+	pytest.global_walletMobileNo = walletMobileNo
+	walletPassword = config.getoption('--walletPassword')
+	pytest.global_walletPassword = walletPassword
+
 	config.option.html_show_all = True  # Show extras for all tests
 
 	pytest.sharedHelper = Helper()
@@ -142,6 +147,23 @@ def pytest_addoption(parser):
 		type=str,
 		help="/wildfly/7301/"
 	)
+ 
+	parser.addoption(
+		"--walletMobileNo",
+		metavar="walletMobileNo",
+		default="99999990",
+		type=str,
+		help="99999990"
+	)
+
+	parser.addoption(
+		"--walletPassword",
+		metavar="walletMobileNo",
+		default="1ppppppppppp",
+		type=str,
+		help="1ppppppppppp"
+	)
+
 
 
 # ````````````````````` pytest_configure `````````````````````

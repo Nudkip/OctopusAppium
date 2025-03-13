@@ -31,6 +31,7 @@ def teardown_module(module):
 
 class TestLoginByPTFSS():
 	class _ScreenShotName(Enum):
+		SPLASH = "SPLASH"
 		TOUR_1 = "TOUR_1"
 		TOUR_2 = "TOUR_2"
 		TOUR_3 = "TOUR_3"
@@ -41,6 +42,7 @@ class TestLoginByPTFSS():
 		TOUR_8 = "TOUR_8"
 		START = "START"
 		SKIP = "SKIP"
+		OFFER_NOTIFICATION = "OFFER_NOTIFICATION"
 		HIGHLIGHT_1 = "HIGHLIGHT_1"
 		HIGHLIGHT_2 = "HIGHLIGHT_2"
 		HIGHLIGHT_3 = "HIGHLIGHT_3"
@@ -49,8 +51,8 @@ class TestLoginByPTFSS():
 		APP_TRACK = "APP_TRACK"
 		HOME = "HOME"
 		PTFSS = "PTFSS"
-		TAP_LOGIN_PAGE = "TAP_LOGIN_PAGE"
-		TAP_LOGIN = "TAP_LOGIN"
+		PTFSS_LOGIN_PAGE = "PTFSS_LOGIN_PAGE"
+		PTFSS_LOGIN = "PTFSS_LOGIN"
 		INPUT_MOBILE_NUMBER = "INPUT_MOBILE_NUMBER"
 		INPUT_PASSWORD = "INPUT_PASSWORD"
 		TAP_LOGIN_BUTTON = "TAP_LOGIN_BUTTON"
@@ -129,3 +131,30 @@ class TestLoginByPTFSS():
 	def test_Login(self, appium_driverNoReset):
 		pytest.sharedHelper.driver = appium_driverNoReset
 		self.log.log(msg="test_Login", level=0)
+		ptfssBtn = Helper().scroll_until_iOSPredicateString_element_found(appium_driverNoReset, 'name == "Transport Subsidy"')
+		ptfssBtn.click()
+  
+		pytest.sharedHelper.captureScreenFYR(appium_driverNoReset, self.directory, self.screenShotCounter, TestLoginByPTFSS._ScreenShotName.PTFSS.value)
+		loginCell = Helper().scroll_until_iOSPredicateString_element_found(appium_driverNoReset, 'label CONTAINS "Login/Create"')
+		loginCell.click()
+  
+		pytest.sharedHelper.captureScreenFYR(appium_driverNoReset, self.directory, self.screenShotCounter, TestLoginByPTFSS._ScreenShotName.PTFSS_LOGIN_PAGE.value)
+		loginBtn = Helper().scroll_until_iOSPredicateString_element_found(appium_driverNoReset, 'name == "Login"')
+		loginBtn.click()
+
+		pytest.sharedHelper.captureScreenFYR(appium_driverNoReset, self.directory, self.screenShotCounter, TestLoginByPTFSS._ScreenShotName.PTFSS_LOGIN.value)
+		mobileNumberTxtField = Helper().scroll_until_iOSPredicateString_element_found(appium_driverNoReset, 'label CONTAINS "Enter Mobile Number"')
+		mobileNumberTxtField.send_keys("%s" % pytest.global_walletMobileNo)
+
+		pytest.sharedHelper.captureScreenFYR(appium_driverNoReset, self.directory, self.screenShotCounter, TestLoginByPTFSS._ScreenShotName.INPUT_MOBILE_NUMBER.value)
+		passwordTxtField = Helper().scroll_until_iOSPredicateString_element_found(appium_driverNoReset, 'label CONTAINS "Password"')
+		passwordTxtField.send_keys("%s" % pytest.global_walletPassword)
+
+		pytest.sharedHelper.captureScreenFYR(appium_driverNoReset, self.directory, self.screenShotCounter, TestLoginByPTFSS._ScreenShotName.INPUT_PASSWORD.value)
+		loginBtn = Helper().scroll_until_iOSPredicateString_element_found(appium_driverNoReset, 'name == "Login"')
+		loginBtn.click()
+  
+		pytest.sharedHelper.captureScreenFYR(appium_driverNoReset, self.directory, self.screenShotCounter, TestLoginByPTFSS._ScreenShotName.IGNORE_SAVE_PASSWORD.value)
+		savePasswordAlert = WebDriverWait(appium_driverNoReset, 3).until(EC.alert_is_present())
+		print(f"Alert text: {savePasswordAlert.text}")
+		savePasswordAlert.dismiss
