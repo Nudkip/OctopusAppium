@@ -1,0 +1,7 @@
+pytest
+Pillow
+appium-python-client
+py
+dominate
+pytest-ordering
+pytest-html 

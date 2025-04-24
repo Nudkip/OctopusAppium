@@ -28,3 +28,6 @@ pip3 install py
 pip3 install dominate
 pip3 install pytest-ordering
 pip3 install pytest-html 
+
+pip install -r '/Users/raymondchan/GIT/OctopusAppium/requirements.txt'
+pip3 list                                                             

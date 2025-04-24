@@ -60,12 +60,17 @@ class TestSetupAppEnv():
 	def test_fullResetApp(self, appium_driverFullReset):
 		print("full reset App")
 
-	@pytest.mark.xfail(raises=SystemError)
 	@pytest.mark.run(order=1)
 	def test_setupEnvironment(self, appium_driverSetting):
 		pytest.sharedHelper.driver = appium_driverSetting
-		octopusCell = Helper().scroll_until_iOSPredicateString_element_found(appium_driverSetting, 'name == "Octopus"')
+		
+		appCell = Helper().scroll_until_iOSPredicateString_element_found(appium_driverSetting, 'name == "Apps"')
+		appCell.click()
+
+		octopusCell = Helper().scroll_until_iOSPredicateString_element_found(appium_driverSetting, 'name == "com.octopuscards.octopus"')
+		Helper().swipe(appium_driverSetting, 200, 300, 200, 200)
 		pytest.sharedHelper.captureScreenFYR(appium_driverSetting, self.directory, self.screenShotCounter, TestSetupAppEnv._ScreenShotName.SELECT_APP.value)
+		sleep(10)
 		octopusCell.click()
 
 		serverCell = Helper().scroll_until_iOSPredicateString_element_found(appium_driverSetting, 'name == "Server"')
@@ -76,31 +81,33 @@ class TestSetupAppEnv():
 		print(pytest.global_environment)
 		print(pytest.global_environment)
 
-		envCell = Helper().scroll_until_element_found(appium_driverSetting, '//XCUIElementTypeCell[@name="%s"]' % pytest.global_environment)
+		envCell = Helper().scroll_until_elementXPATH_found(appium_driverSetting, '//XCUIElementTypeButton[@name="%s"]' % pytest.global_environment)
 		pytest.sharedHelper.captureScreenFYR(appium_driverSetting, self.directory, self.screenShotCounter, TestSetupAppEnv._ScreenShotName.DID_SELECT_SEVER.value)
 		envCell.click()
 
-		backBtn = Helper().scroll_until_element_found(appium_driverSetting, '//XCUIElementTypeButton[@name="Octopus"]')
+		backBtn = Helper().scroll_until_elementXPATH_found(appium_driverSetting, '//XCUIElementTypeButton[@name="Octopus"]')
 		backBtn.click()
 		
-		customOWPathTextField = Helper().scroll_until_element_found(appium_driverSetting, '//XCUIElementTypeTextField[@name="SB_CUS_OW_PATH"]')
+		customOWPathTextField = Helper().scroll_until_elementXPATH_found(appium_driverSetting, '//XCUIElementTypeTextField[@name="PSTextFieldSpecifier.SB_CUS_OW_PATH"]')
 		customOWPathTextField.clear()
 		customOWPathTextField.send_keys("%s" % pytest.global_owPath)
 		pytest.sharedHelper.captureScreenFYR(appium_driverSetting, self.directory, self.screenShotCounter, TestSetupAppEnv._ScreenShotName.DID_SET_OWPATH.value)
   
-		returnBtn = Helper().scroll_until_element_found(appium_driverSetting, '//XCUIElementTypeButton[@name="Return"]')
+		returnBtn = Helper().scroll_until_elementXPATH_found(appium_driverSetting, '//XCUIElementTypeButton[@name="Return"]')
 		returnBtn.click()
   
-		customOOSPathTextField = Helper().scroll_until_element_found(appium_driverSetting, '//XCUIElementTypeTextField[@name="SB_CUS_OOS_PATH"]')
+		customOOSPathTextField = Helper().scroll_until_elementXPATH_found(appium_driverSetting, '//XCUIElementTypeTextField[@name="PSTextFieldSpecifier.SB_CUS_OOS_PATH"]')
 		customOOSPathTextField.clear()
 		customOOSPathTextField.send_keys("%s" % pytest.global_oosPath)
 		pytest.sharedHelper.captureScreenFYR(appium_driverSetting, self.directory, self.screenShotCounter, TestSetupAppEnv._ScreenShotName.DID_SET_OOSPATH.value)
+		
+		sleep(1)
 		returnBtn.click()
 
 		try:
-			customWARSwitch = appium_driverSetting.find_element(by=AppiumBy.IOS_CLASS_CHAIN, value="**/XCUIElementTypeSwitch[`value == \"0\"`][2]")
+			customWARSwitch = Helper().scroll_until_elementXPATH_found(appium_driverSetting, '(//XCUIElementTypeSwitch[@value="0"])[2]')
 			switch_state = customWARSwitch.get_attribute("value")
-			print("click the switch now")
+			print("click the switch now %s" % switch_state)
 			customWARSwitch.click()  # Turn the switch on
 			pytest.sharedHelper.captureScreenFYR(appium_driverSetting, self.directory, self.screenShotCounter, TestSetupAppEnv._ScreenShotName.DID_SET_CUSTOM_PATH.value)
 		except:

@@ -4,5 +4,18 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"python.languageServer": "Pylance",  // Use Pylance for better navigation
+        "python.analysis.extraPaths": [
+            "/Users/raymondchan/GIT/OctopusAppium/util",    // Folder with Helper.py, Constant.py
+            "/Users/raymondchan/GIT/OctopusAppium"          // Root folder (for top-level modules)
+        ],
+        "python.autoComplete.extraPaths": [
+            "/Users/raymondchan/GIT/OctopusAppium/util",
+            "/Users/raymondchan/GIT/OctopusAppium"
+        ],
+		"python.analysis.indexing": true,  // Ensure full project indexing
+		"python.linting.enabled": true,          // Enable linting
+        "python.linting.pylintEnabled": true,    // Use pylint (install with pip if needed)
+	}
 }

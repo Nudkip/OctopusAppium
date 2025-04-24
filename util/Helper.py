@@ -78,15 +78,18 @@ class Helper:
 	
 
 	@staticmethod
-	def scroll_until_element_found(driver, xpath, max_attempts=5):
+	def scroll_until_elementXPATH_found(driver, xpath, max_attempts=5):
 		for _ in range(max_attempts):
 			try:
 				element = WebDriverWait(driver, 0.1).until(EC.visibility_of_element_located((By.XPATH, xpath)))
 				print("Element found! %s" % xpath)
+				WebDriverWait(driver, 10).until(
+					EC.element_to_be_clickable((By.XPATH, xpath))
+				)
 				return element
 			except:
-				print("Element not found, swiping down...")
-				Helper().swipe(driver, 200, 600, 200, 200)
+				print("Element not found, swiping down... %s" % xpath)
+				Helper().swipe(driver, 200, 400, 200, 200)
 		raise Exception("Element not found after max attempts")
 
 	@staticmethod
@@ -95,10 +98,13 @@ class Helper:
 			try:
 				element = WebDriverWait(driver, 0.1).until(EC.visibility_of_element_located((AppiumBy.IOS_PREDICATE, predicateString)))
 				print("Element found! %s" % predicateString)
+				WebDriverWait(driver, 10).until(
+					EC.element_to_be_clickable((AppiumBy.IOS_PREDICATE, predicateString))
+				)
 				return element
 			except:
-				print("Element not found, swiping down...")
-				Helper().swipe(driver, 200, 600, 200, 200)
+				print("Element not found, swiping down... %s" % predicateString)
+				Helper().swipe(driver, 200, 400, 200, 200)
 		raise Exception("Element not found after max attempts")
 
 	@staticmethod
@@ -107,22 +113,30 @@ class Helper:
 			try:
 				element = WebDriverWait(driver, 0.1).until(EC.visibility_of_element_located((AppiumBy.ACCESSIBILITY_ID, ID)))
 				print("Element found! %s" % ID)
+				WebDriverWait(driver, 10).until(
+					EC.element_to_be_clickable((AppiumBy.ACCESSIBILITY_ID, ID))
+				)
+
 				return element
 			except:
-				print("Element not found, swiping down...")
-				Helper().swipe(driver, 200, 600, 200, 200)
+				print("Element not found, swiping down... %s" % ID)
+				Helper().swipe(driver, 200, 400, 200, 200)
 		raise Exception("Element not found after max attempts")
 
 	@staticmethod
-	def scroll_until_elementID_found(driver, id, max_attempts=5):
+	def scroll_until_elementID_found(driver, ID, max_attempts=5):
 		for _ in range(max_attempts):
 			try:
-				element = WebDriverWait(driver, 0.1).until(EC.visibility_of_element_located((By.ID, id)))
-				print("Element found! %s" % id)
+				element = WebDriverWait(driver, 0.1).until(EC.visibility_of_element_located((By.ID, ID)))
+				print("Element found! %s" % ID)
+				WebDriverWait(driver, 10).until(
+					EC.element_to_be_clickable((By.ID, ID))
+				)
+
 				return element
 			except:
-				print("Element not found, swiping down...")
-				Helper().swipe(driver, 200, 600, 200, 200)
+				print("Element not found, swiping down... %s" % ID)
+				Helper().swipe(driver, 200, 400, 200, 200)
 		raise Exception("Element not found after max attempts")
 
 	@staticmethod
@@ -130,11 +144,14 @@ class Helper:
 		for _ in range(max_attempts):
 			try:
 				element = WebDriverWait(driver, 0.1).until(EC.visibility_of_element_located((AppiumBy.IOS_CLASS_CHAIN, appiumBy)))
-				print("Element found! %s" % id)
+				print("Element found! %s" % appiumBy)
+				WebDriverWait(driver, 10).until(
+					EC.element_to_be_clickable((AppiumBy.IOS_CLASS_CHAIN, appiumBy))
+				)
 				return element
 			except:
-				print("Element not found, swiping down...")
-				Helper().swipe(driver, 200, 600, 200, 200)
+				print("Element not found, swiping down... %s" % appiumBy)
+				Helper().swipe(driver, 200, 400, 200, 200)
 		raise Exception("Element not found after max attempts")
 
 	def captureScreenFYR(self, appium_driver, directory, screenShotCount, remarks):

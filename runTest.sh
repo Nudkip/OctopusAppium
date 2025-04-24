@@ -2,11 +2,12 @@ reportPath='./testResult'
 current_time=$(date "+%Y%m%d_%H_%M")
 # add testCase Class to array
 testCasePathArray=()
-testCasePathArray+=('test_AppAuthNotification')
+testCasePathArray+=('./test_setupApp')
 # testCasePathArray+=('./test/test_appAuthNotification')
 
 
 arrayLength=${#testCasePathArray[@]}
+echo arrayLength $arrayLength
 # install the new .ipa
 # install ios-deploy from 
     # npm i -g ios-deploy
@@ -15,6 +16,8 @@ arrayLength=${#testCasePathArray[@]}
 for(( j=0; j<$arrayLength; j++ ))
 do
     testCase=${testCasePathArray[$j]}
+    echo testCase $testCase
+
     echo running $line
     # stop after two failures --maxfail=2 
     # shortcut for --capture=no. -s
@@ -23,6 +26,7 @@ do
     python3 -m pytest -v -s --fullReset=True --maxfail=1 ${testCase} --html=$reportPath/${testCase}_${current_time}.html --self-contained-html
     # python3 -m pytest -v -s --fullReset=True --maxfail=1 ${testCasePathArray[$j]}.py --self-contained-html
     # python3 -m pytest -v -s --fullReset=True --maxfail=1 ./test --html=$reportPath/index.html --self-contained-html
+    echo python3 
 
 done
 

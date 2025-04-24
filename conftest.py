@@ -23,8 +23,8 @@ def appium_driverSetting():
 	options = AppiumOptions()
 	options.load_capabilities({
 		"platformName": "iOS",
-		"appium:deviceName": "iPhone 15",
-		"appium:platformVersion": "17.2",
+		"appium:deviceName": "iPhone 16",
+		"appium:platformVersion": "18.0",
 		"appium:includeNonModalElements": True,  # Critical for system elements
 		"appium:noReset": False,
 		"appium:app": "com.apple.Preferences",
@@ -44,8 +44,8 @@ def appium_driverFullReset():
 	options = AppiumOptions()
 	options.load_capabilities({
 		"platformName": "iOS",
-		"appium:deviceName": "iPhone 15",
-		"appium:platformVersion": "17.2",
+		"appium:deviceName": "iPhone 16",
+		"appium:platformVersion": "18.0",
 		"appium:includeNonModalElements": True,  # Critical for system elements
 		"appium:noReset": False,
 		"appium:app": "/Users/raymondchan/Documents/Appium/OctopusQuickBuild.app",
@@ -66,15 +66,16 @@ def appium_driverNoReset():
 	options = AppiumOptions()
 	options.load_capabilities({
 		"platformName": "iOS",
-		"appium:deviceName": "iPhone 15",
-		"appium:platformVersion": "17.2",
+		"appium:deviceName": "iPhone 16",
+		"appium:platformVersion": "18.0",
 		"appium:includeNonModalElements": True,  # Critical for system elements
 		"appium:noReset": True,
 		"appium:app": "/Users/raymondchan/Documents/Appium/OctopusQuickBuild.app",
 		"appium:automationName": "XCUITest",
 		"appium:includeSafariInWebviews": True,
 		"appium:newCommandTimeout": 3600,
-		"appium:connectHardwareKeyboard": True
+		"appium:connectHardwareKeyboard": False,
+		"appium:boundElementsByIndex": True  
 	})
 
 	driver = Remote("http://127.0.0.1:4723", options=options)
@@ -101,6 +102,10 @@ def pytest_configure(config):
  
 	walletMobileNo = config.getoption('--walletMobileNo')
 	pytest.global_walletMobileNo = walletMobileNo
+ 
+	otp = config.getoption('--walletOTP')
+	pytest.global_otp = otp
+
 	walletPassword = config.getoption('--walletPassword')
 	pytest.global_walletPassword = walletPassword
 
@@ -121,7 +126,7 @@ def pytest_addoption(parser):
 	parser.addoption(
 		"--device",
 		metavar="DEVICE",
-		default="iPhone 15",
+		default="iPhone 16",
 		type=str,
 		help="Device type (e.g., iPhone7_8_Plus)"
 	)
@@ -162,6 +167,15 @@ def pytest_addoption(parser):
 		type=str,
 		help="1ppppppppppp"
 	)
+ 
+	parser.addoption(
+		"--walletOTP",
+		metavar="walletOTP",
+		default="262626",
+		type=str,
+		help="262626"
+	)
+
 
 
 
