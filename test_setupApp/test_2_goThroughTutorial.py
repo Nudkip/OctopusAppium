@@ -47,6 +47,7 @@ class TestGoThroughTutorial():
 		HIGHLIGHT_2 = "HIGHLIGHT_2"
 		HIGHLIGHT_3 = "HIGHLIGHT_3"
 		HIGHLIGHT_4 = "HIGHLIGHT_4"
+		HIGHLIGHT_5 = "HIGHLIGHT_5"
 		NOTIFICATION = "NOTIFICATION"
 		APP_TRACK = "APP_TRACK"
 		HOME = "HOME"
@@ -126,6 +127,7 @@ class TestGoThroughTutorial():
 	def test_GoThroughHighlight(self, appium_driverNoReset):
 		pytest.sharedHelper.driver = appium_driverNoReset
 		self.log.log(msg="test_GoThroughHighlight", level=0)
+
 		pytest.sharedHelper.captureScreenFYR(appium_driverNoReset, self.directory, self.screenShotCounter, TestGoThroughTutorial._ScreenShotName.HIGHLIGHT_1.value)
 
 		Helper().tap(appium_driverNoReset, 200, 200)
@@ -136,6 +138,9 @@ class TestGoThroughTutorial():
 
 		Helper().tap(appium_driverNoReset, 200, 200)
 		pytest.sharedHelper.captureScreenFYR(appium_driverNoReset, self.directory, self.screenShotCounter, TestGoThroughTutorial._ScreenShotName.HIGHLIGHT_4.value)
+
+		Helper().tap(appium_driverNoReset, 200, 200)
+		pytest.sharedHelper.captureScreenFYR(appium_driverNoReset, self.directory, self.screenShotCounter, TestGoThroughTutorial._ScreenShotName.HIGHLIGHT_5.value)
 
 		Helper().tap(appium_driverNoReset, 200, 200)
 		pytest.sharedHelper.captureScreenFYR(appium_driverNoReset, self.directory, self.screenShotCounter, TestGoThroughTutorial._ScreenShotName.NOTIFICATION.value)

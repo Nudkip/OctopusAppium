@@ -156,7 +156,7 @@ class Helper:
 
 	def captureScreenFYR(self, appium_driver, directory, screenShotCount, remarks):
 		screenSize = appium_driver.get_window_size()
-		sleep(1)
+		sleep(2)
 		reminder = str(screenShotCount.getCounter()) + '_' + remarks
 		basePath = str(directory)[:-len(str(time.strftime("%Y%m%d_%H_%M")))-1] + 'Source/' + pytest.global_device + '/'
 		print(basePath)

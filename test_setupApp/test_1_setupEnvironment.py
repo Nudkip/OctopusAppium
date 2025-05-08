@@ -97,7 +97,8 @@ class TestSetupAppEnv():
 		returnBtn.click()
   
 		customOOSPathTextField = Helper().scroll_until_elementXPATH_found(appium_driverSetting, '//XCUIElementTypeTextField[@name="PSTextFieldSpecifier.SB_CUS_OOS_PATH"]')
-		customOOSPathTextField.clear()
+		customOOSPathTextField.clear()                                                          
+
 		customOOSPathTextField.send_keys("%s" % pytest.global_oosPath)
 		pytest.sharedHelper.captureScreenFYR(appium_driverSetting, self.directory, self.screenShotCounter, TestSetupAppEnv._ScreenShotName.DID_SET_OOSPATH.value)
 		
