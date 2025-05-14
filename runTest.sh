@@ -23,7 +23,7 @@ do
     # shortcut for --capture=no. -s
     # increase verbosity. -v
     # --pdb add pytest.set_trace() in breakPoint
-    python3 -m pytest -v -s --fullReset=True --maxfail=1 ${testCase} --html=$reportPath/${testCase}_${current_time}.html --self-contained-html
+    python3 -m pytest -v -s --fullReset=True --environment=Mario --maxfail=1 ${testCase} --html=$reportPath/${testCase}_${current_time}.html --self-contained-html
     # python3 -m pytest -v -s --fullReset=True --maxfail=1 ${testCasePathArray[$j]}.py --self-contained-html
     # python3 -m pytest -v -s --fullReset=True --maxfail=1 ./test --html=$reportPath/index.html --self-contained-html
     echo python3 
