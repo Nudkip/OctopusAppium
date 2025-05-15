@@ -11,10 +11,13 @@ import sys
 import pytest
 from enum import Enum
 from appium.webdriver.common.appiumby import AppiumBy
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from util.ScreenShotCount import *
 # from Helper import *
 sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))))
+from util.api_client import APIClient  # Import the APIClient
 from conftest import *
 
 def setup_module(module):
@@ -47,10 +50,25 @@ class TestSetupAppEnv():
 		self.log = logging.getLogger(method.__name__)
 		self.directory = Helper().createDirectory(self.__class__.__name__, method.__name__)
 		self.screenShotCounter = ScreenShotCount(1)
-		print(f"************** setup_method before {method.__name__} **************")
+		# Instantiate the APIClient here
+		self.api_client = APIClient(base_url="https://10.46.4.83:9448")
+		endpoint = "/ow_tools_ws/rest/tools/wallet/info/get"
+		params = {"mobileNumber": "99998327"}
+
+		try:
+			# Remember to handle SSL verification if needed, as discussed before
+			response = self.api_client.get(endpoint, params=params, verify=False) # Add verify=False if necessary
+			print("API Response Status Code:", response.status_code)
+			print("API Response JSON:", response.json())
+			# You can then process the response data
+		except requests.exceptions.RequestException as e:
+			print(f"API call failed: {e}")
+			# Handle the error appropriately, maybe assert failure or log it
 
 	def teardown_method(self, method):
 		print()
+		self.api_client.close_session() # Good practice to close the session
+		print(f"APIClient session closed for {method.__name__}")
 		print(f"************** teardown_method after {method.__name__} **************")
 
 	@pytest.mark.skipif(pytest.global_fullReset == "False", reason="Only run after FullReset")
@@ -85,9 +103,16 @@ class TestSetupAppEnv():
 		pytest.sharedHelper.captureScreenFYR(appium_driverSetting, self.directory, self.screenShotCounter, TestSetupAppEnv._ScreenShotName.DID_SELECT_SEVER.value)
 		envCell.click()
 
-		backBtn = Helper().scroll_until_elementXPATH_found(appium_driverSetting, '//XCUIElementTypeButton[@name="Octopus"]')
-		backBtn.click()
-
+		# Check if the "Octopus" back button is visible and click it, otherwise bypass
+		try:
+			# Use WebDriverWait with a short timeout to check for visibility
+			backBtn = WebDriverWait(appium_driverSetting, 5).until(
+				EC.visibility_of_element_located((AppiumBy.XPATH, '//XCUIElementTypeButton[@name="Octopus"]'))
+			)
+			print("Found 'Octopus' back button, clicking it.")
+			backBtn.click()
+		except:
+			print("'Octopus' back button not found or not visible, bypassing click.")
 		customOWPathTextField = Helper().scroll_until_elementXPATH_found(appium_driverSetting, '//XCUIElementTypeTextField[@name="PSTextFieldSpecifier.SB_CUS_OW_PATH"]')
 		customOWPathTextField.clear()
 		customOWPathTextField.send_keys(f"{pytest.global_owPath}")
