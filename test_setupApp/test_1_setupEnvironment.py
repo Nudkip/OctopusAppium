@@ -14,10 +14,12 @@ from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from Model import WalletInfo
 from util.ScreenShotCount import *
 # from Helper import *
 sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))))
 from util.api_client import APIClient  # Import the APIClient
+import requests # Ensure requests is imported if using requests.exceptions
 from conftest import *
 
 def setup_module(module):
@@ -50,17 +52,39 @@ class TestSetupAppEnv():
 		self.log = logging.getLogger(method.__name__)
 		self.directory = Helper().createDirectory(self.__class__.__name__, method.__name__)
 		self.screenShotCounter = ScreenShotCount(1)
+		self.wallet_info = None # Initialize wallet_info
 		# Instantiate the APIClient here
 		self.api_client = APIClient(base_url="https://10.46.4.83:9448")
 		endpoint = "/ow_tools_ws/rest/tools/wallet/info/get"
 		params = {"mobileNumber": "99998327"}
-
+		print(f"APIClient initialized for {method.__name__} with base_url: {self.api_client.base_url}")
 		try:
 			# Remember to handle SSL verification if needed, as discussed before
 			response = self.api_client.get(endpoint, params=params, verify=False) # Add verify=False if necessary
 			print("API Response Status Code:", response.status_code)
-			print("API Response JSON:", response.json())
-			# You can then process the response data
+			response_json = response.json()
+			print("API Response JSON:", response_json)
+
+			# Create WalletInfo object from the JSON response
+			self.wallet_info = WalletInfo(
+				wallet_id=response_json.get('walletId'),
+				customer_number=response_json.get('customerNumber'),
+				cdd_level=response_json.get('cddLevel'),
+				wallet_level=response_json.get('walletLevel'),
+				mobile_number=response_json.get('mobileNumber'),
+				email_address=response_json.get('emailAddress'),
+				document_id=response_json.get('documentId'),
+				nationality=response_json.get('nationality'),
+				dob=response_json.get('dob'),
+				customer_status=response_json.get('customerStatus'),
+				wallet_status=response_json.get('walletStatus'),
+				wallet_balance=response_json.get('walletBalance'),
+				first_name=response_json.get('firstName'),
+				last_name=response_json.get('lastName'),
+				chinese_full_name=response_json.get('chineseFullName')
+			)
+			print(f"WalletInfo object created: {self.wallet_info.first_name} {self.wallet_info.last_name}")
+
 		except requests.exceptions.RequestException as e:
 			print(f"API call failed: {e}")
 			# Handle the error appropriately, maybe assert failure or log it
