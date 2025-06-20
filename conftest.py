@@ -7,11 +7,13 @@ from time import sleep
 import sys
 import pytest_html
 from dominate.tags import *
-
+ 
 from util.Helper import Helper
 
 from appium.webdriver import Remote
 from appium.options.common.base import AppiumOptions
+from appium.options.android import UiAutomator2Options
+
 
 logging.basicConfig(level=logging.CRITICAL)
 
@@ -30,7 +32,7 @@ def appium_driverSetting():
 		"appium:app": "com.apple.Preferences",
 		"appium:automationName": "XCUITest",
 		"appium:includeSafariInWebviews": True,
-		"appium:newCommandTimeout": 3600,
+		"appium:newCommandTimeout": 360,
 		"appium:connectHardwareKeyboard": True
 	})
 
@@ -51,7 +53,7 @@ def appium_driverFullReset():
 		"appium:app": "/Users/raymondchan/Documents/Appium/OctopusQuickBuild.app",
 		"appium:automationName": "XCUITest",
 		"appium:includeSafariInWebviews": True,
-		"appium:newCommandTimeout": 3600,
+		"appium:newCommandTimeout": 360,
 		"appium:connectHardwareKeyboard": True
 	})
 
@@ -68,14 +70,14 @@ def appium_driverNoReset():
 		"platformName": "iOS",
 		"appium:deviceName": "iPhone 16",
 		"appium:platformVersion": "18.0",
-		"appium:includeNonModalElements": True,  # Critical for system elements
+		"appium:includeNonModalElements": True,  # Critical for IOS system elements
 		"appium:noReset": True,
 		"appium:app": "/Users/raymondchan/Documents/Appium/OctopusQuickBuild.app",
 		"appium:automationName": "XCUITest",
 		"appium:includeSafariInWebviews": True,
-		"appium:newCommandTimeout": 3600,
+		"appium:newCommandTimeout": 360,
 		"appium:connectHardwareKeyboard": False,
-		"appium:boundElementsByIndex": True  
+		"appium:boundElementsByIndex": True  # Critical for IOS system elements
 	})
 
 	driver = Remote("http://127.0.0.1:4723", options=options)
@@ -83,7 +85,28 @@ def appium_driverNoReset():
 	driver.implicitly_wait(20)
 	return driver
 
+#----------------------- @pytest.Android.fixture ---------------------
+@pytest.fixture(scope="module")
+def appium_Android_driverNoReset():
+	options = UiAutomator2Options()
+	options.load_capabilities({
+        "platformName": "Android",
+        "appium:automationName": "UiAutomator2",
+        "appium:platformVersion": "14",
+        "appium:deviceName": "R3CWA03FA0K",
+        "appium:appPackage": "com.octopuscards.nfc_reader",
+        "appium:appActivity": "com.octopuscards.nfc_reader.ui.login.activities.OctopusFullLoginActivity",
+        "appium:noReset": True, 
+        "appium:newCommandTimeout": 360
+    })
+
+	driver = Remote("http://127.0.0.1:4723", options=options)
+
+	driver.implicitly_wait(20)
+	return driver
+
 # --------------------- @pytest.fixture ---------------------
+
 
 # ````````````````````` pytest_configure `````````````````````
 
