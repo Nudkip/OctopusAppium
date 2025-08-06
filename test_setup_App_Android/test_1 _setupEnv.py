@@ -1,3 +1,12 @@
+import sys
+import os
+
+# Add the project root directory to sys.path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(project_root)
+
+
+
 from appium import webdriver
 from appium.options.android import UiAutomator2Options
 import time
@@ -8,7 +17,7 @@ from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-#from util.Helper import *
+from util.Helper import Helper
 #from util.ScreenShotCount import * 
 from checking import *
 
@@ -46,8 +55,8 @@ def setup_appium_driver():
         print(f"Current Context: {driver.context}") # Usually NATIVE_APP
 
         # Simple interaction example: wait a few seconds, then close the app
-        print("Specified app opened, will remain open for 5 seconds...")
-        time.sleep(5) 
+        print("Specified app opened, will remain open for 3 seconds...")
+        time.sleep(3) 
         
         return driver
 
@@ -81,37 +90,19 @@ if __name__ == "__main__":
             print("Appium session executed successfully!")
             time.sleep(1)  # Wait for the app to load
             wait = WebDriverWait(driver, 2)
-            sign_in_button = wait.until(EC.element_to_be_clickable((AppiumBy.XPATH, "//*[contains(@resource-id, 'sign_in_btn_layout')]")))
-            sign_in_button.click()
-            time.sleep(2)  # Wait for the sign-in process to complete
-            el = driver.find_elements(AppiumBy.CLASS_NAME, "android.widget.EditText")
-            el[0].click()
-            el[0].send_keys("99000067")
-            if len(el) > 1:
-                print("Captral is disable password is needed")
-                el[1].click()
-                el[1].send_keys("aaaa1111")
-            else:
-                print("Captral is enable, not able to proceed")
-
-            login_button = driver.find_element(AppiumBy.XPATH, "//*[contains(@resource-id, 'login_button')]")
-            login_button.click()
-            try:
-                CommonChecking.check_snackbar(driver)
-            except Exception as e: 
-                print(f"An error occurred while checking for snackbar: {e}")
-
+            skip_button = wait.until(EC.element_to_be_clickable((AppiumBy.XPATH, "//*[contains(@resource-id, 'skip_btn')]")))
+            skip_button.click()
+            time.sleep(3)  # Wait for the skip sign-in loading
+            # Call the static method directly on the Helper class
+            is_alive = Helper.is_app_alive_reliable(driver, "com.octopuscards.nfc_reader")
+            print(f"Is app alive: {is_alive}")
+            time.sleep(1)  # Wait for the skip sign-in loading
+            Helper.handle_permissions(driver)
+            start_button = wait.until(EC.element_to_be_clickable((AppiumBy.XPATH, "//*[contains(@resource-id, 'start_btn')]")))
+            start_button.click()
+            image_setting_button = wait.until(EC.element_to_be_clickable((AppiumBy.XPATH, "//*[contains(@resource-id, 'guideline_logo_imageview')]")))
+            image_setting_button.click()
             
-            # You can add your test operations here, e.g., clicking buttons, entering text
-            # Example: If you know an element's ID or accessibility ID in your app
-            # try:
-            #     some_element = driver.find_element("accessibility id", "Some Button Text")
-            #     some_element.click()
-            #     print("Successfully clicked an element.")
-            #     time.sleep(2)
-            # except Exception as e:
-            #     print(f"Could not find or click element: {e}")
-
     finally:
         tear_down_driver(driver)
         print("Script execution finished.")

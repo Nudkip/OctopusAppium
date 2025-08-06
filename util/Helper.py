@@ -126,6 +126,7 @@ class Helper:
 			try:
 				element = WebDriverWait(driver, attempt_timeout).until(
 					EC.element_to_be_clickable((AppiumBy.IOS_PREDICATE, predicateString))
+				
 				)
 				print(f"scroll_until_iOSPredicateString_element_found: Element '{predicateString}' found and clickable in attempt {i + 1}.")
 				return element
@@ -299,3 +300,99 @@ class Helper:
 		# reset array
 		self.compareArray = []
 		return str(p1)
+###########################ANDROID HELPER########################################
+	@staticmethod
+	def is_app_alive_reliable(driver, package_name):
+		"""
+		Reliably checks if an app is alive based on its state.
+		- Returns True if the app is running in the foreground.
+		- If the app is running in the background (state code 2 or 3), it automatically
+		  brings it to the foreground and returns True.
+		- Returns False if the app is not running, not installed, or an error occurs.
+
+		App State Codes:
+		- 0: Not installed.
+		- 1: Not running.
+		- 2: Running in the background or suspended.
+		- 3: Running in the background.
+		- 4: Running in the foreground.
+
+		Returns:
+		- True: The app is running (and is brought to the foreground if needed).
+		- False: The app is not running, not installed, or an error occurred.
+		"""
+		try:
+			app_state = driver.query_app_state(package_name)
+
+			if app_state == 4:  # App is running in the foreground
+				print(f"App '{package_name}' is already running in the foreground.")
+				return True
+
+			elif app_state in [2, 3]:  # App is running in the background
+				print(f"App '{package_name}' is running in the background. Bringing it to the foreground...")
+				driver.activate_app(package_name)
+				# Wait a few seconds to ensure the app has fully resumed
+				time.sleep(3)
+				print(f"App '{package_name}' has been successfully brought to the foreground.")
+				return True
+
+			elif app_state == 1:  # App is not running
+				print(f"App '{package_name}' is not running.")
+				return False
+
+			elif app_state == 0:  # App is not installed
+				print(f"App '{package_name}' is not installed.")
+				return False
+
+			else:  # Unknown state
+				print(f"App '{package_name}' is in an unknown state (code: {app_state}).")
+				return False
+
+		except Exception as e:
+			# An exception often indicates that the connection to the app was lost,
+			# which is a strong sign that the app has terminated.
+			print(f"An error occurred while checking app state: {e}")
+			return False
+
+	@staticmethod
+	def handle_permissions(driver):
+		"""
+		Locates the Android permission dialog and clicks the 'Allow' button.
+		This function handles multiple languages and will not fail if the dialog is not present.
+		
+		Args:
+			driver: The Appium WebDriver instance.
+		"""
+		try:
+			# 1. Define locators for the dialog and the allow button
+			permission_dialog_id = "com.android.permissioncontroller:id/grant_dialog"
+			allow_button_id = "com.android.permissioncontroller:id/permission_allow_button"
+			
+			# 2. Use WebDriverWait to wait for the dialog to appear.
+			# Use a short timeout since it usually appears quickly.
+			wait = WebDriverWait(driver, 5)
+			wait.until(EC.presence_of_element_located((AppiumBy.ID, permission_dialog_id)))
+			print("Permission dialog located by ID.")
+
+			# 3. Attempt to find and click the 'Allow' button by its ID.
+			try:
+				allow_button = driver.find_element(AppiumBy.ID, allow_button_id)
+				allow_button.click()
+				print("Clicked the 'Allow' button by ID.")
+			except NoSuchElementException:
+				# 4. Fallback if the button ID is not found.
+				# This handles cases where the text might be different or the ID is missing.
+				print("Could not find 'Allow' button by ID. Attempting to locate by text.")
+				allow_button_locators = [
+					AppiumBy.XPATH, "//*[contains(@text, 'Allow') or contains(@text, '允許') or contains(@text, '允许')]"
+				]
+				allow_button = driver.find_element(*allow_button_locators)
+				allow_button.click()
+				print("Clicked the 'Allow' button by text.")
+			# 5. Add a small pause after clicking to let the dialog disappear
+			time.sleep(1)
+
+		except (NoSuchElementException, TimeoutException):
+			print("Permission dialog or 'Allow' button was not found. Continuing test.")
+		except Exception as e:
+			print(f"An unexpected error occurred while handling permissions: {e}")
